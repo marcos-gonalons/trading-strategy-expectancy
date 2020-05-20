@@ -4,6 +4,7 @@ import Form from "../../components/form/Form";
 import Result from "../../components/result/Result";
 
 import styles from "./index.module.css";
+import { Period } from "../Types";
 
 function Index(): JSX.Element {
     const [balance, setBalance] = useState<number>(10000);
@@ -12,9 +13,10 @@ function Index(): JSX.Element {
     const [stopLossDistance, setStopLossDistance] = useState<number>(10);
     const [approxSuccessRate, setApproxSuccessRate] = useState<number>(70);
     const [trades, setTrades] = useState<number>(3);
-    const [period, setPeriod] = useState<string>("Day");
+    const [period, setPeriod] = useState<Period>("Day");
     const [simulationTimeUnit, setSimulationTimeUnit] = useState<number>(1);
-    const [simulationTimePeriod, setSimulationTimePeriod] = useState<string>("Years");
+	const [simulationTimePeriod, setSimulationTimePeriod] = useState<Period>("Year");
+	const [calculateFlag, setCalculateFlag] = useState<boolean>(false);
 	return (
 		<Container maxWidth="lg">
 			<Grid
@@ -31,7 +33,7 @@ function Index(): JSX.Element {
 						}}
 						setters={{
 							setBalance, setRiskPerTrade, setTakeProfitDistance, setStopLossDistance, setApproxSuccessRate,
-							setTrades, setPeriod, setSimulationTimeUnit, setSimulationTimePeriod
+							setTrades, setPeriod, setSimulationTimeUnit, setSimulationTimePeriod, setCalculateFlag
 						}}
 					/>
 				</Grid>
@@ -46,6 +48,7 @@ function Index(): JSX.Element {
 						period={period}
 						simulationTimeUnit={simulationTimeUnit}
 						simulationTimePeriod={simulationTimePeriod}
+						calculate={calculateFlag}
 					/>
 				</Grid>
 			</Grid>

@@ -4,6 +4,7 @@ import { Paper, TextField, Select, MenuItem, Button, Box } from "@material-ui/co
 import styles from "./Form.module.css";
 import mainStyles from "../../pages/index/index.module.css";
 import { Props } from "./Types";
+import { Period } from "../../pages/Types";
 
 
 function Form({ properties, setters }: Props): JSX.Element {
@@ -27,7 +28,8 @@ function Form({ properties, setters }: Props): JSX.Element {
         setTrades,
         setPeriod,
         setSimulationTimeUnit,
-        setSimulationTimePeriod
+        setSimulationTimePeriod,
+        setCalculateFlag
     } = setters;
     return (
         <Paper className={mainStyles["card"]} elevation={24}>
@@ -117,7 +119,7 @@ function Form({ properties, setters }: Props): JSX.Element {
                     value={period}
                     className={styles["tiny-input"]}
                     onChange={({ target: { value }}) => {
-                        setPeriod(value as string);
+                        setPeriod(value as Period);
                     }}
                 >
                     <MenuItem value={"Day"}>Day</MenuItem>
@@ -146,17 +148,28 @@ function Form({ properties, setters }: Props): JSX.Element {
                     value={simulationTimePeriod}
                     className={styles["tiny-input"]}
                     onChange={({ target: { value }}) => {
-                        setSimulationTimePeriod(value as string);
+                        setSimulationTimePeriod(value as Period);
                     }}
                 >
-                    <MenuItem value={"Days"}>Day(s)</MenuItem>
-                    <MenuItem value={"Weeks"}>Week(s)</MenuItem>
-                    <MenuItem value={"Months"}>Month(s)</MenuItem>
-                    <MenuItem value={"Years"}>Year(s)</MenuItem>
+                    <MenuItem value={"Day"}>Day(s)</MenuItem>
+                    <MenuItem value={"Week"}>Week(s)</MenuItem>
+                    <MenuItem value={"Month"}>Month(s)</MenuItem>
+                    <MenuItem value={"Year"}>Year(s)</MenuItem>
                 </Select>
             </Box>
             <Box id={styles["simulate-button-box"]}>
-                <Button variant="contained" color="primary">SIMULATE</Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        setCalculateFlag(false)
+                        setTimeout(() => {
+                            setCalculateFlag(true);
+                        });
+                    }}
+                >
+                    SIMULATE
+                </Button>
             </Box>
         </Paper>
     );

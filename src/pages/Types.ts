@@ -1,0 +1,1 @@
+export type Period = "Day" | "Week" | "Month" | "Year";

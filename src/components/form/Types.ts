@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import { Period } from "../../pages/Types";
+
 export interface Props {
     properties: {
         balance: number;
@@ -6,19 +9,20 @@ export interface Props {
         stopLossDistance: number;
         approxSuccessRate: number;
         trades: number;
-        period: string;
+        period: Period;
         simulationTimeUnit: number;
-        simulationTimePeriod: string;
+        simulationTimePeriod: Period;
     },
     setters: {
-        setBalance: (v: number) => void;
-        setRiskPerTrade: (v: number) => void;
-        setTakeProfitDistance: (v: number) => void;
-        setStopLossDistance: (v: number) => void;
-        setApproxSuccessRate: (v: number) => void;
-        setTrades: (v: number) => void;
-        setPeriod: (v: string) => void;
-        setSimulationTimeUnit: (v: number) => void;
-        setSimulationTimePeriod: (v: string) => void;
+        setBalance: Dispatch<SetStateAction<number>>;
+        setRiskPerTrade: Dispatch<SetStateAction<number>>;
+        setTakeProfitDistance: Dispatch<SetStateAction<number>>;
+        setStopLossDistance: Dispatch<SetStateAction<number>>;
+        setApproxSuccessRate: Dispatch<SetStateAction<number>>;
+        setTrades: Dispatch<SetStateAction<number>>;
+        setPeriod: Dispatch<SetStateAction<Period>>;
+        setSimulationTimeUnit: Dispatch<SetStateAction<number>>;
+        setSimulationTimePeriod: Dispatch<SetStateAction<Period>>;
+        setCalculateFlag: Dispatch<SetStateAction<boolean>>;
     }
 }
