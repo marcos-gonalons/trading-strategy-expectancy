@@ -14,3 +14,13 @@
 .tiniest-input {
     width: 12%;
 }
+
+#simulate-button-box {
+    text-align: right;
+    margin-top: 20px;
+}
+
+
+.box {
+    margin: 20px 0px !important;
+}
