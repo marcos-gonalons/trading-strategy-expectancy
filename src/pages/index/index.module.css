@@ -1,4 +1,5 @@
-#main-card {
+.card {
     margin-top: 100px;
     border: 1px solid black;
+    padding: 20px 40px;
 }

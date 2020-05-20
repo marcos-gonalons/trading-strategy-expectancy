@@ -1,0 +1,16 @@
+.normal-text-input {
+    width: 100%;
+    margin: 20px 0px !important;
+}
+
+.tiny-input, .tiniest-input {
+    margin: 0px 10px !important;
+}
+
+.tiny-input {
+    width: 20%;
+}
+
+.tiniest-input {
+    width: 12%;
+}
