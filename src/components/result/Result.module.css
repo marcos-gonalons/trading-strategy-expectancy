@@ -1,3 +1,15 @@
 #result-title {
     text-align: center;
 }
+
+.results-div {
+    margin: 10px 0px;
+}
+
+b.positive {
+    color: rgb(92, 238, 92);
+}
+
+b.negative {
+    color: red;
+}

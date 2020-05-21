@@ -7,7 +7,7 @@ import { Props } from "./Types";
 import { Period } from "../../pages/Types";
 
 function Result({
-    balance,
+    balance: initialBalance,
     riskPerTrade,
     takeProfitDistance,
     stopLossDistance,
@@ -16,37 +16,40 @@ function Result({
     period,
     simulationTimeUnit,
     simulationTimePeriod,
-    calculate
 }: Props): JSX.Element {
-    let finalAmount = balance;
+    let finalAmount = initialBalance;
     let amountOfPositiveTrades = 0;
     let amountOfNegativeTrades = 0;
     let totalTrades = 0;
+    totalTrades = getTotalTrades(trades, period, simulationTimeUnit, simulationTimePeriod);
 
-    if (calculate === true) {
-        totalTrades = getTotalTrades(trades, period, simulationTimeUnit, simulationTimePeriod);
-
-        for (let i = 0; i <= totalTrades; i += 1) {
-            const positionSize = Math.floor(finalAmount * (riskPerTrade/100) / stopLossDistance);
-            if (Math.random() <= approxSuccessRate / 100) {
-                amountOfPositiveTrades += 1;
-                finalAmount += (positionSize * takeProfitDistance);
-            } else {
-                amountOfNegativeTrades += 1;
-                finalAmount -= (positionSize * stopLossDistance);
-            }
+    for (let i = 0; i <= totalTrades; i += 1) {
+        const positionSize = Math.floor(finalAmount * (riskPerTrade/100) / stopLossDistance) || 1;
+        if (Math.random() <= approxSuccessRate / 100) {
+            amountOfPositiveTrades += 1;
+            finalAmount += (positionSize * takeProfitDistance);
+        } else {
+            amountOfNegativeTrades += 1;
+            finalAmount -= (positionSize * stopLossDistance);
+        }
+        if (finalAmount <= 0) {
+            break;
         }
     }
+
+    let amountClassName = finalAmount > initialBalance ? "positive" : "negative";
     return (
         <Paper className={mainStyles["card"]} elevation={24}>
             <h1 id={styles["result-title"]}>Results</h1>
-            { calculate === true ? (
-                <>
-                    <div>Total trades: {totalTrades}</div>
-                    <div>Success rate: { Math.round((amountOfPositiveTrades / totalTrades) * 10000) / 100 }</div>
-                    <div>Final amount: {finalAmount.toLocaleString()}</div>
-                </>
-            ) : <></>}
+            <div className={styles["results-div"]}>
+                Total trades performed in the period: <b>{totalTrades}</b>
+            </div>
+            <div className={styles["results-div"]}>
+                Final success rate: <b>{ Math.round((amountOfPositiveTrades / totalTrades) * 10000) / 100 }</b>
+            </div>
+            <div className={styles["results-div"]}>
+                Final amount: <b className={styles[amountClassName]}>{finalAmount.toLocaleString()}</b>
+            </div>
         </Paper>
     );
 }
@@ -59,7 +62,7 @@ function getTotalTrades(
     simulationTimePeriod: Period
 ): number {
     const tradesPerDay = Math.ceil(averageTrades / getDaysInPeriod(averageTradesPeriod));
-    const simulationDays = Math.ceil(simulationTimeUnit * getDaysInPeriod(simulationTimePeriod));
+    const simulationDays = Math.ceil(simulationTimeUnit * getDaysInPeriodWhereTradesCanBeOpened(simulationTimePeriod));
     return tradesPerDay * simulationDays;
 }
 
@@ -73,5 +76,14 @@ function getDaysInPeriod(period: Period): number {
     }
 }
 
+
+function getDaysInPeriodWhereTradesCanBeOpened(period: Period): number {
+    switch (period) {
+        case "Day": return 1;
+        case "Week": return 5;
+        case "Month": return 22;
+        case "Year": return 264;
+    }
+}
 export default Result;
 
