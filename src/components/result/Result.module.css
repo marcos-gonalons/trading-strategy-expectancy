@@ -16,4 +16,5 @@ b.negative {
 
 textarea {
     width: 100%;
+    resize: vertical;
 }
