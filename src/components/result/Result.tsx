@@ -16,6 +16,7 @@ function Result({
     period,
     simulationTimeUnit,
     simulationTimePeriod,
+    calculate
 }: Props): JSX.Element {
     let finalAmount = initialBalance;
     let amountOfPositiveTrades = 0;
@@ -24,27 +25,29 @@ function Result({
     totalTrades = getTotalTrades(trades, period, simulationTimeUnit, simulationTimePeriod);
     let detailedString = "";
 
-    for (let i = 0; i <= totalTrades; i += 1) {
-        const positionSize = Math.floor(finalAmount * (riskPerTrade/100) / stopLossDistance) || 1;
-        detailedString += `Current balance: ${finalAmount}\n`;
-        detailedString += `Position size = ${positionSize}\n`;
-        if (Math.random() <= approxSuccessRate / 100) {
-            amountOfPositiveTrades += 1;
-            const profit = (positionSize * takeProfitDistance);
-            detailedString += `Profit = ${positionSize} x ${takeProfitDistance} = ${profit}\n`;
-            detailedString += `New balance = ${finalAmount} + ${profit} = ${finalAmount + profit}\n\n`;
-            finalAmount += profit;
-        } else {
-            amountOfNegativeTrades += 1;
-            const loss = (positionSize * stopLossDistance);
-            detailedString += `Loss = ${positionSize} x ${stopLossDistance} = ${loss}\n`;
-            detailedString += `New balance = ${finalAmount} - ${loss} = ${finalAmount - loss}\n\n`;
-            finalAmount -= loss;
-        }
-        if (finalAmount <= 0) {
-            totalTrades = i;
-            finalAmount = 0;
-            break;
+    if (calculate) {
+        for (let i = 0; i <= totalTrades; i += 1) {
+            const positionSize = Math.floor(finalAmount * (riskPerTrade/100) / stopLossDistance) || 1;
+            detailedString += `Current balance: ${finalAmount}\n`;
+            detailedString += `Position size = ${positionSize}\n`;
+            if (Math.random() <= approxSuccessRate / 100) {
+                amountOfPositiveTrades += 1;
+                const profit = (positionSize * takeProfitDistance);
+                detailedString += `Profit = ${positionSize} x ${takeProfitDistance} = ${profit}\n`;
+                detailedString += `New balance = ${finalAmount} + ${profit} = ${finalAmount + profit}\n\n`;
+                finalAmount += profit;
+            } else {
+                amountOfNegativeTrades += 1;
+                const loss = (positionSize * stopLossDistance);
+                detailedString += `Loss = ${positionSize} x ${stopLossDistance} = ${loss}\n`;
+                detailedString += `New balance = ${finalAmount} - ${loss} = ${finalAmount - loss}\n\n`;
+                finalAmount -= loss;
+            }
+            if (finalAmount <= 0) {
+                totalTrades = i;
+                finalAmount = 0;
+                break;
+            }
         }
     }
 
