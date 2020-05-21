@@ -13,3 +13,7 @@ b.positive {
 b.negative {
     color: red;
 }
+
+textarea {
+    width: 100%;
+}

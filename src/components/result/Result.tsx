@@ -22,17 +22,28 @@ function Result({
     let amountOfNegativeTrades = 0;
     let totalTrades = 0;
     totalTrades = getTotalTrades(trades, period, simulationTimeUnit, simulationTimePeriod);
+    let detailedString = "";
 
     for (let i = 0; i <= totalTrades; i += 1) {
         const positionSize = Math.floor(finalAmount * (riskPerTrade/100) / stopLossDistance) || 1;
+        detailedString += `Current balance: ${finalAmount}\n`;
+        detailedString += `Position size = ${positionSize}\n`;
         if (Math.random() <= approxSuccessRate / 100) {
             amountOfPositiveTrades += 1;
-            finalAmount += (positionSize * takeProfitDistance);
+            const profit = (positionSize * takeProfitDistance);
+            detailedString += `Profit = ${positionSize} x ${takeProfitDistance} = ${profit}\n`;
+            detailedString += `New balance = ${finalAmount} + ${profit} = ${finalAmount + profit}\n\n`;
+            finalAmount += profit;
         } else {
             amountOfNegativeTrades += 1;
-            finalAmount -= (positionSize * stopLossDistance);
+            const loss = (positionSize * stopLossDistance);
+            detailedString += `Loss = ${positionSize} x ${stopLossDistance} = ${loss}\n`;
+            detailedString += `New balance = ${finalAmount} - ${loss} = ${finalAmount - loss}\n\n`;
+            finalAmount -= loss;
         }
         if (finalAmount <= 0) {
+            totalTrades = i;
+            finalAmount = 0;
             break;
         }
     }
@@ -49,6 +60,9 @@ function Result({
             </div>
             <div className={styles["results-div"]}>
                 Final amount: <b className={styles[amountClassName]}>{finalAmount.toLocaleString()}</b>
+            </div>
+            <div className={styles["results-div"]}>
+                <textarea rows={10} readOnly value={detailedString}></textarea>
             </div>
         </Paper>
     );
