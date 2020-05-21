@@ -14,3 +14,6 @@ Example:
 - Success rate: 70%
 
 With this values, in 5 years, you would have around 250.000$. A rentability of 2500% over the initial balance of 10.000.
+
+
+Play with it here https://master.d6jgpf3ju1n8k.amplifyapp.com/
