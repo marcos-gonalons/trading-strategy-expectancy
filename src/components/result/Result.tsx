@@ -22,7 +22,7 @@ function Result({
     let amountOfPositiveTrades = 0;
     let amountOfNegativeTrades = 0;
     let totalTrades = 0;
-    totalTrades = getTotalTrades(trades, period, simulationTimeUnit, simulationTimePeriod);
+    totalTrades = calculate ? getTotalTrades(trades, period, simulationTimeUnit, simulationTimePeriod) : 0;
     let detailedString = "";
 
     if (calculate) {
@@ -51,7 +51,7 @@ function Result({
         }
     }
 
-    let amountClassName = finalAmount > initialBalance ? "positive" : "negative";
+    let amountClassName = calculate ? (finalAmount > initialBalance ? "positive" : "negative") : "positive";
     return (
         <Paper className={mainStyles["card"]} elevation={24}>
             <h1 id={styles["result-title"]}>Results</h1>
@@ -59,7 +59,7 @@ function Result({
                 Total trades performed in the period: <b>{totalTrades}</b>
             </div>
             <div className={styles["results-div"]}>
-                Final success rate: <b>{ Math.round((amountOfPositiveTrades / totalTrades) * 10000) / 100 }</b>
+                Final success rate: <b>{ calculate ? Math.round((amountOfPositiveTrades / totalTrades) * 10000) / 100 : "-" }</b>
             </div>
             <div className={styles["results-div"]}>
                 Final amount: <b className={styles[amountClassName]}>{finalAmount.toLocaleString()}</b>
