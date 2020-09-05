@@ -26,6 +26,7 @@ function Result({
     totalTrades = calculate ? getTotalTrades(trades, period, simulationTimeUnit, simulationTimePeriod) : 0;
     let detailedString = "";
     let totalTaxes = 0;
+    let yearlyProfits = 0;
 
     if (calculate) {
         const tradesPerYear = (trades / getDaysInPeriodWhereTradesCanBeOpened(period)) * getDaysInPeriodWhereTradesCanBeOpened("Year");
@@ -41,12 +42,14 @@ function Result({
                 detailedString += `Profit = ${positionSize} x ${takeProfitDistance} = ${profit}\n`;
                 detailedString += `New balance = ${finalAmount} + ${profit} = ${finalAmount + profit}\n\n`;
                 finalAmount += profit;
+                yearlyProfits += profit;
             } else {
                 amountOfNegativeTrades += 1;
                 const loss = (positionSize * stopLossDistance);
                 detailedString += `Loss = ${positionSize} x ${stopLossDistance} = ${loss}\n`;
                 detailedString += `New balance = ${finalAmount} - ${loss} = ${finalAmount - loss}\n\n`;
                 finalAmount -= loss;
+                yearlyProfits -= loss;
             }
             if (finalAmount <= 0) {
                 totalTrades = i;
@@ -57,10 +60,15 @@ function Result({
             tradesPerYearCounter++;
             if (tradesPerYearCounter >= tradesPerYear) {
                 if (finalAmount <= initialBalance) continue;
-                const deduction = (finalAmount * (yearlyTaxesPercentage / 100));
+                const deduction = (yearlyProfits * (yearlyTaxesPercentage / 100));
                 totalTaxes += deduction;
+
+                detailedString += `YEARLY PROFITS -> ${yearlyProfits} \n\n`;
                 detailedString += `TAXES DEDUCTION -> ${finalAmount} - ${deduction} = ${finalAmount - deduction}\n\n`;
+
+                finalAmount = finalAmount - deduction;
                 tradesPerYearCounter = 0;
+                yearlyProfits = 0;
             }
         }
     }
@@ -77,15 +85,10 @@ function Result({
                 Final success rate: <b>{ calculate ? Math.round((amountOfPositiveTrades / totalTrades) * 10000) / 100 : "-" }</b>
             </div>
             <div className={styles["results-div"]}>
-                Total profits: <b className={styles[profitsClassName]}>
-                    { finalAmount === initialBalance ? 0 : (Math.round(finalAmount).toLocaleString()) }
-                </b>
-            </div>
-            <div className={styles["results-div"]}>
                 Total taxes: <b className={styles["negative"]}>{Math.round(totalTaxes).toLocaleString()}</b>
             </div>
             <div className={styles["results-div"]}>
-                Final amount: <b className={styles[finalAmountClassName]}>{Math.round(finalAmount - totalTaxes).toLocaleString()}</b>
+                Final amount: <b className={styles[finalAmountClassName]}>{Math.round(finalAmount).toLocaleString()}</b>
             </div>
             <div className={styles["results-div"]}>
                 <textarea rows={10} readOnly value={detailedString}></textarea>
