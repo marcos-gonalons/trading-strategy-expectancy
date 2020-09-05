@@ -16,6 +16,7 @@ function Result({
     period,
     simulationTimeUnit,
     simulationTimePeriod,
+    yearlyTaxesPercentage,
     calculate
 }: Props): JSX.Element {
     let finalAmount = initialBalance;
@@ -26,6 +27,9 @@ function Result({
     let detailedString = "";
 
     if (calculate) {
+        const tradesPerYear = (trades / getDaysInPeriodWhereTradesCanBeOpened(period)) * getDaysInPeriodWhereTradesCanBeOpened("Year");
+        let tradesPerYearCounter = 0;
+
         for (let i = 0; i <= totalTrades; i += 1) {
             const positionSize = Math.floor(finalAmount * (riskPerTrade/100) / stopLossDistance) || 1;
             detailedString += `Current balance: ${finalAmount}\n`;
@@ -48,6 +52,14 @@ function Result({
                 finalAmount = 0;
                 break;
             }
+
+            tradesPerYearCounter++;
+            if (tradesPerYearCounter >= tradesPerYear) {
+                const deduction = (finalAmount * (yearlyTaxesPercentage / 100));
+                detailedString += `TAXES DEDUCTION -> ${finalAmount} - ${deduction} = ${finalAmount - deduction}\n\n`;
+                finalAmount = finalAmount - deduction;
+                tradesPerYearCounter = 0;
+            }
         }
     }
 
@@ -62,7 +74,7 @@ function Result({
                 Final success rate: <b>{ calculate ? Math.round((amountOfPositiveTrades / totalTrades) * 10000) / 100 : "-" }</b>
             </div>
             <div className={styles["results-div"]}>
-                Final amount: <b className={styles[amountClassName]}>{finalAmount.toLocaleString()}</b>
+                Final amount: <b className={styles[amountClassName]}>{Math.round(finalAmount).toLocaleString()}</b>
             </div>
             <div className={styles["results-div"]}>
                 <textarea rows={10} readOnly value={detailedString}></textarea>

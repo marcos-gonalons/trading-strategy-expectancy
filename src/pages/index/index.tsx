@@ -14,6 +14,7 @@ function Index(): JSX.Element {
     const [approxSuccessRate, setApproxSuccessRate] = useState<number>(70);
     const [trades, setTrades] = useState<number>(3);
     const [period, setPeriod] = useState<Period>("Day");
+	const [yearlyTaxesPercentage, setYearlyTaxesPercentage] = useState<number>(20);
     const [simulationTimeUnit, setSimulationTimeUnit] = useState<number>(1);
 	const [simulationTimePeriod, setSimulationTimePeriod] = useState<Period>("Year");
 	const [calculateFlag, setCalculateFlag] = useState<boolean>(false);
@@ -29,11 +30,11 @@ function Index(): JSX.Element {
 					<Form
 						properties={{
 							balance, riskPerTrade, takeProfitDistance, stopLossDistance, approxSuccessRate,
-							trades, period, simulationTimeUnit, simulationTimePeriod
+							trades, period, simulationTimeUnit, simulationTimePeriod, yearlyTaxesPercentage
 						}}
 						setters={{
 							setBalance, setRiskPerTrade, setTakeProfitDistance, setStopLossDistance, setApproxSuccessRate,
-							setTrades, setPeriod, setSimulationTimeUnit, setSimulationTimePeriod, setCalculateFlag
+							setTrades, setPeriod, setSimulationTimeUnit, setSimulationTimePeriod, setCalculateFlag, setYearlyTaxesPercentage
 						}}
 					/>
 				</Grid>
@@ -49,6 +50,7 @@ function Index(): JSX.Element {
 						simulationTimeUnit={simulationTimeUnit}
 						simulationTimePeriod={simulationTimePeriod}
 						calculate={calculateFlag}
+						yearlyTaxesPercentage={yearlyTaxesPercentage}
 					/>
 				</Grid>
 			</Grid>

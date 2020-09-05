@@ -12,6 +12,7 @@ export interface Props {
         period: Period;
         simulationTimeUnit: number;
         simulationTimePeriod: Period;
+        yearlyTaxesPercentage: number;
     },
     setters: {
         setBalance: Dispatch<SetStateAction<number>>;
@@ -24,5 +25,6 @@ export interface Props {
         setSimulationTimeUnit: Dispatch<SetStateAction<number>>;
         setSimulationTimePeriod: Dispatch<SetStateAction<Period>>;
         setCalculateFlag: Dispatch<SetStateAction<boolean>>;
+        setYearlyTaxesPercentage: Dispatch<SetStateAction<number>>;
     }
 }

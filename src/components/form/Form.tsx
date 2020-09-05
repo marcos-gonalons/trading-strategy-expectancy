@@ -17,7 +17,8 @@ function Form({ properties, setters }: Props): JSX.Element {
         trades,
         period,
         simulationTimeUnit,
-        simulationTimePeriod
+        simulationTimePeriod,
+        yearlyTaxesPercentage
     } = properties;
     const {
         setBalance,
@@ -29,7 +30,8 @@ function Form({ properties, setters }: Props): JSX.Element {
         setPeriod,
         setSimulationTimeUnit,
         setSimulationTimePeriod,
-        setCalculateFlag
+        setCalculateFlag,
+        setYearlyTaxesPercentage
     } = setters;
     return (
         <Paper className={mainStyles["card"]} elevation={24}>
@@ -38,66 +40,42 @@ function Form({ properties, setters }: Props): JSX.Element {
                 className={styles["normal-text-input"]}
                 type="number"
                 value={balance}
-                onChange={({ target: { value }}) => {
-                    const v = parseInt(value);
-                    setBalance(isNaN(v) ? 0 : v)
-                }}
+                onChange={({ target: { value }}) => onChangeNumber(value, setBalance, 0, 999999999)}
             />
             <TextField
                 label="Percentage risk per trade"
                 className={styles["normal-text-input"]}
                 type="number"
                 value={riskPerTrade}
-                onChange={({ target: { value }}) => {
-                    const v = parseInt(value);
-                    if (isNaN(v) || v <= 0 || v >= 100) {
-                        setRiskPerTrade(1)
-                    } else {
-                        setRiskPerTrade(v);
-                    }
-                }}
+                onChange={({ target: { value }}) => onChangeNumber(value, setRiskPerTrade, 0, 100)}
             />
             <TextField
                 label="Take profit distance in pips"
                 className={styles["normal-text-input"]}
                 type="number"
                 value={takeProfitDistance}
-                onChange={({ target: { value }}) => {
-                    const v = parseInt(value);
-                    if (isNaN(v) || v <= 0 || v >= 10000) {
-                        setTakeProfitDistance(10)
-                    } else {
-                        setTakeProfitDistance(v);
-                    }
-                }}
+                onChange={({ target: { value }}) => onChangeNumber(value, setTakeProfitDistance, 0, 10000)}
             />
             <TextField
                 label="Stop loss distance in pips"
                 className={styles["normal-text-input"]}
                 type="number"
                 value={stopLossDistance}
-                onChange={({ target: { value }}) => {
-                    const v = parseInt(value);
-                    if (isNaN(v) || v <= 0 || v >= 10000) {
-                        setStopLossDistance(10)
-                    } else {
-                        setStopLossDistance(v);
-                    }
-                }}
+                onChange={({ target: { value }}) => onChangeNumber(value, setStopLossDistance, 0, 10000)}
             />
             <TextField
                 label="Approximate success rate"
                 className={styles["normal-text-input"]}
                 type="number"
                 value={approxSuccessRate}
-                onChange={({ target: { value }}) => {
-                    const v = parseInt(value);
-                    if (isNaN(v) || v <= 0 || v >= 100) {
-                        setApproxSuccessRate(70)
-                    } else {
-                        setApproxSuccessRate(v);
-                    }
-                }}
+                onChange={({ target: { value }}) => onChangeNumber(value, setApproxSuccessRate, 0, 100)}
+            />
+            <TextField
+                label="Yearly taxes percentage"
+                className={styles["normal-text-input"]}
+                type="number"
+                value={yearlyTaxesPercentage}
+                onChange={({ target: { value }}) => onChangeNumber(value, setYearlyTaxesPercentage, 0, 100)}
             />
             <Box className={styles["box"]}>
                 <span>I will make on average</span>
@@ -105,14 +83,7 @@ function Form({ properties, setters }: Props): JSX.Element {
                     type="number"
                     className={styles["tiniest-input"]}
                     value={trades}
-                    onChange={({ target: { value }}) => {
-                        const v = parseInt(value);
-                        if (isNaN(v) || v <= 0 || v >= 99999) {
-                            setTrades(3)
-                        } else {
-                            setTrades(v);
-                        }
-                    }}
+                    onChange={({ target: { value }}) => onChangeNumber(value, setTrades, 0, 99999)}
                 />
                 <span>trades every</span>
                 <Select
@@ -135,14 +106,7 @@ function Form({ properties, setters }: Props): JSX.Element {
                     type="number"
                     className={styles["tiniest-input"]}
                     value={simulationTimeUnit}
-                    onChange={({ target: { value }}) => {
-                        const v = parseInt(value);
-                        if (isNaN(v) || v <= 0 || v >= 99999) {
-                            setSimulationTimeUnit(1)
-                        } else {
-                            setSimulationTimeUnit(v);
-                        }
-                    }}
+                    onChange={({ target: { value }}) => onChangeNumber(value, setSimulationTimeUnit, 0, 99999)}
                 />
                 <Select
                     value={simulationTimePeriod}
@@ -173,6 +137,21 @@ function Form({ properties, setters }: Props): JSX.Element {
             </Box>
         </Paper>
     );
+}
+
+
+function onChangeNumber(
+    value: string,
+    setter: (v: number) => void,
+    min: number,
+    max: number
+): void {
+    const v = parseInt(value);
+    if (isNaN(v) || v <= min || v >= max) {
+        setter(0)
+    } else {
+        setter(v);
+    }
 }
 
 export default Form;

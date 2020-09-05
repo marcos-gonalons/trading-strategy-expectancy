@@ -11,4 +11,5 @@ export interface Props {
     simulationTimeUnit: number;
     simulationTimePeriod: Period;
     calculate: boolean;
+    yearlyTaxesPercentage: number;
 }
