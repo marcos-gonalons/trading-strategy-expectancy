@@ -25,6 +25,7 @@ function Result({
     let totalTrades = 0;
     totalTrades = calculate ? getTotalTrades(trades, period, simulationTimeUnit, simulationTimePeriod) : 0;
     let detailedString = "";
+    let totalTaxes = 0;
 
     if (calculate) {
         const tradesPerYear = (trades / getDaysInPeriodWhereTradesCanBeOpened(period)) * getDaysInPeriodWhereTradesCanBeOpened("Year");
@@ -55,15 +56,17 @@ function Result({
 
             tradesPerYearCounter++;
             if (tradesPerYearCounter >= tradesPerYear) {
+                if (finalAmount <= initialBalance) continue;
                 const deduction = (finalAmount * (yearlyTaxesPercentage / 100));
+                totalTaxes += deduction;
                 detailedString += `TAXES DEDUCTION -> ${finalAmount} - ${deduction} = ${finalAmount - deduction}\n\n`;
-                finalAmount = finalAmount - deduction;
                 tradesPerYearCounter = 0;
             }
         }
     }
 
-    let amountClassName = calculate ? (finalAmount > initialBalance ? "positive" : "negative") : "positive";
+    let profitsClassName = calculate ? (finalAmount > initialBalance ? "positive" : "negative") : "positive";
+    let finalAmountClassName = calculate ? (finalAmount - totalTaxes > initialBalance ? "positive" : "negative") : "positive";
     return (
         <Paper className={mainStyles["card"]} elevation={24}>
             <h1 id={styles["result-title"]}>Results</h1>
@@ -74,7 +77,15 @@ function Result({
                 Final success rate: <b>{ calculate ? Math.round((amountOfPositiveTrades / totalTrades) * 10000) / 100 : "-" }</b>
             </div>
             <div className={styles["results-div"]}>
-                Final amount: <b className={styles[amountClassName]}>{Math.round(finalAmount).toLocaleString()}</b>
+                Total profits: <b className={styles[profitsClassName]}>
+                    { finalAmount === initialBalance ? 0 : (Math.round(finalAmount).toLocaleString()) }
+                </b>
+            </div>
+            <div className={styles["results-div"]}>
+                Total taxes: <b className={styles["negative"]}>{Math.round(totalTaxes).toLocaleString()}</b>
+            </div>
+            <div className={styles["results-div"]}>
+                Final amount: <b className={styles[finalAmountClassName]}>{Math.round(finalAmount - totalTaxes).toLocaleString()}</b>
             </div>
             <div className={styles["results-div"]}>
                 <textarea rows={10} readOnly value={detailedString}></textarea>
